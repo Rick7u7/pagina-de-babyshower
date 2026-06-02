@@ -8,6 +8,24 @@ use Illuminate\Http\Request;
 
 class GuestController extends Controller
 {
+    public function store(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+        ]);
+
+        Guest::create([
+            'event_id' => $request->event_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'status' => 'pending',
+        ]);
+
+        return back()->with('success', 'Invitado agregado correctamente.');
+    }
+
     public function updateStatus(Request $request, Guest $guest)
     {
         $request->validate([
@@ -31,13 +49,20 @@ class GuestController extends Controller
 
         if ($request->gift_id) {
             $gift = Gift::find($request->gift_id);
+
             if ($gift->reserved && $gift->id != $guest->gift_id) {
                 return back()->with('error', 'Ese regalo ya fue elegido.');
             }
+
             $gift->update(['reserved' => true]);
-            $guest->update(['gift_id' => $gift->id]);
+
+            $guest->update([
+                'gift_id' => $gift->id
+            ]);
         } else {
-            $guest->update(['gift_id' => null]);
+            $guest->update([
+                'gift_id' => null
+            ]);
         }
 
         return back()->with('success', 'Regalo asignado correctamente.');

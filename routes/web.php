@@ -16,6 +16,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
 
     // Invitados
+    Route::post('/guests', [GuestController::class, 'store'])->name('guests.store');
     Route::patch('/guests/{guest}/status', [GuestController::class, 'updateStatus'])->name('guests.updateStatus');
     Route::patch('/guests/{guest}/gift', [GuestController::class, 'chooseGift'])->name('guests.chooseGift');
 

@@ -20,8 +20,10 @@ class EventController extends Controller
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
+
             'guests' => 'required|array|min:1',
             'guests.*.name' => 'required|string|max:255',
+
             'gifts' => 'required|array|min:1',
             'gifts.*.name' => 'required|string|max:255',
         ]);
@@ -38,7 +40,7 @@ class EventController extends Controller
             $event->guests()->create([
                 'name' => $guestData['name'],
                 'email' => $guestData['email'] ?? null,
-                'status' => 'declined',
+                'status' => 'pending',
             ]);
         }
 
@@ -49,7 +51,9 @@ class EventController extends Controller
             ]);
         }
 
-        return redirect()->route('events.index')->with('success', 'Evento creado correctamente.');
+        return redirect()
+            ->route('events.index')
+            ->with('success', 'Evento creado correctamente.');
     }
 
     public function destroy(Event $event)
