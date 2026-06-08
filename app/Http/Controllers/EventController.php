@@ -9,7 +9,10 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with(['guests.gift', 'gifts'])->get();
+        $events = Event::with(['guests.gift', 'gifts'])
+            ->where('user_id', auth()->id())
+            ->get();
+
         return view('events.index', compact('events'));
     }
 
